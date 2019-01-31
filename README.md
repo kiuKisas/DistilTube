@@ -1,21 +1,9 @@
-# DistilTube
+# [WIP] DistilTube
 
-**TODO: Add description**
+DistilTube is a youtube crawler in it's early stage. It aims to bring you an easy access to stream and information from a url id without using the Youtube API, but by crawling and parsing youtube HTML. It's part of [Demosic]() project.
 
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `youtube_parser` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:distiltube, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/youtube_parser](https://hexdocs.pm/youtube_parser).
-
+# before 0.1 release
+- [] decypher signature
+- [] get proper fmt stream link
+- [] better error handling
+- [] refacto and clean
