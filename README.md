@@ -10,7 +10,7 @@ by adding `youtube_parser` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:youtube_parser, "~> 0.1.0"}
+    {:distiltube, "~> 0.1.0"}
   ]
 end
 ```
