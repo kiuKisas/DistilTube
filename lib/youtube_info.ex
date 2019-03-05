@@ -8,10 +8,10 @@ defmodule DistilTube.Info do
     do: Regex.run(~r/"sts"\s*:\s*(\d+)/, embed_body)
 
   defp player_url_assets_regex({:ok, %Tesla.Env{body: body}}),
-    do: Regex.run(~r/"assets":.+?"js":\s*("[^"]+")/, body) 
+    do: Regex.run(~r/"assets":.+?"js":\s*("[^"]+")/, body)
 
   defp player_url_assets_regex(body),
-    do: Regex.run(~r/"assets":.+?"js":\s*("[^"]+")/, body) 
+    do: Regex.run(~r/"assets":.+?"js":\s*("[^"]+")/, body)
 
   defp player_url_ytplayer_regex(body),
     do: Regex.run(~r/ytplayer\.config.*?"url"\s*:\s*("[^"]+")/, body)
@@ -29,7 +29,7 @@ defmodule DistilTube.Info do
          js_player_url = config_player_url(body, video_id)
                        |> List.last
                        |> Jason.decode!
-          # need more inspection when to use it, token ? 
+          # need more inspection when to use it, token ?
           # video_id
           #|> rec_get_video_info(info[:sts], ["info", "embedded", "detailpage", "vevo", ""])
           #|> compact_info(info)
@@ -66,7 +66,7 @@ defmodule DistilTube.Info do
           |> embed_sts
           |> List.last
     {:ok, %Tesla.Env{body: video_info_body}} = Youtube.video_info(video_id, sts)
-    video_info = URI.decode_query(video_info_body) 
+    video_info = URI.decode_query(video_info_body)
     player_url = player_url_assets_regex(embed_body) ||
       player_url_ytplayer_regex(embed_body)
     %{
@@ -88,12 +88,12 @@ defmodule DistilTube.Info do
         video_info: args,
         dashmpds: args["dashmpd"] || [],
         age_gate: false,
-        live: live 
+        live: live
       }
     }
   end
 
-  defp config_info(%{"args" => %{"ypc_id" => _}}), do: {:error, :rental_video} 
+  defp config_info(%{"args" => %{"ypc_id" => _}}), do: {:error, :rental_video}
 
   def compact_info(extra, info) do
     info
@@ -118,7 +118,7 @@ defmodule DistilTube.Info do
       |> Jason.decode!
     else
       nil
-    end 
+    end
   end
 
   defp rec_get_video_info(video_id, sts, [el | acc]) do
@@ -138,7 +138,7 @@ defmodule DistilTube.Info do
     end
   end
 
-  defp rec_get_video_info(_, _, []), do: %{video_info: '', dashmpds: [], token: false} 
+  defp rec_get_video_info(_, _, []), do: %{video_info: '', dashmpds: [], token: false}
 
 
   def extend_info({:ok, info}) do

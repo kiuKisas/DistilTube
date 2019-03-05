@@ -25,7 +25,7 @@ defmodule DistilTube.StreamFormats.Fmt do
   end
 
   defp stream_list(video_info, js_player_url) do
-    encoded_url_map = EncodedUrlMap.get(video_info) 
+    encoded_url_map = EncodedUrlMap.get(video_info)
     signature_list = encoded_url_map
      |> Enum.map(fn {_name, data} -> Signature.get(data, js_player_url) end)
     %{
@@ -48,7 +48,7 @@ defmodule DistilTube.StreamFormats.Fmt do
                          |> String.split("/")
     [width, height] = resolution
                       |> String.split("x")
-    { 
+    {
       itag,
       %{
         resolution: resolution,
