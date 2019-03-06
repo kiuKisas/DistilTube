@@ -7,20 +7,35 @@ defmodule DistilTube.StreamFormats.Fmt.Signature.Cipher do
 
   alias DistilTube.StreamFormats.Fmt.Signature.Search
 
-  # Return formatted actions from actions_raw
-  #
-  ## Exemple:
-  # iex> actions_format("lv.Ym(a,25);...")
-  # [["lv", "Ym", "a,25"]]
-
   defp actions_format(actions_raw) do
     actions_raw
     |> String.split(";")
-    |> Enum.map(&(
-      ~r/(?P<obj>.*)\.(?P<func>.*)\((?P<args>.*)\)/
-        |> Regex.named_captures(&1)
-        |> function_args_format
-    ))
+    |> Enum.map(&(action_format(&1) |> function_args_format))
+  end
+
+  defp action_format(action_raw) do
+    ~r/(?P<obj>.*)\.(?P<func>.*)\((?P<args>.*)\)/
+    |> Regex.named_captures(action_raw)
+  end
+
+  #
+  # Youtube seems to use arithmetic function for swap only
+	#
+  # var c=a[0];a[0]=a[b%a.length];a[b]=c
+  # var c=a[0];a[0]=a[b%a.length];a[b%a.length]=c
+	#
+  # Basically, a swap between the character at position 0 and b, with a
+	# modulo protection to be sure that b is not equal or superior
+	# to a length
+  #
+
+  defp arithmetic_format(action_raw) do
+    regex = ~r/var\s\w=\w\[0\];\w\[0\]=\w\[\w\%\w.length\];\w\[\w(%\w\.length)?]=\w/
+      case String.match?(action_raw, regex) do
+        true -> %{"func" => "swap"}
+        false -> nil
+      end
+
   end
 
   defp objname_from_action(%{"obj" => objname}) do
@@ -61,13 +76,15 @@ defmodule DistilTube.StreamFormats.Fmt.Signature.Cipher do
       function_raw
       |> function_separator
       |> function_args_format
+      |> function_code_format
       |> function_format
     end)
     |> Enum.into(%{})
   end
 
-  defp function_args_format(nil) do
-    nil
+  defp function_code_format(function = %{"code" => code}) do
+    function
+      |> Map.put("code_format", action_format(code) || arithmetic_format(code))
   end
 
   defp function_args_format(function) do
@@ -113,8 +130,8 @@ defmodule DistilTube.StreamFormats.Fmt.Signature.Cipher do
     end
   end
 
-  def decipher(data, _s) do
-    data
+  def decipher(data, s) do
+    {data, s}
     # PRE
     #  decode dictionary code
     #
