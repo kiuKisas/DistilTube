@@ -101,8 +101,8 @@ defmodule DistilTube.StreamFormats.Fmt.Signature.Cipher do
       |> Regex.named_captures(function_raw)
   end
 
-  # see how to make a global ok/err, maybe stop the loop if one err ?
-  # see reduce maybe ?
+  # TODO: see how to make a global ok/err, maybe stop the loop if one err ?
+  # TODO: see reduce maybe ?
   defp dictionary(js_player_body, %{"objnames" => objnames}) do
     objnames
     |> Enum.map(fn objname ->
@@ -132,13 +132,6 @@ defmodule DistilTube.StreamFormats.Fmt.Signature.Cipher do
 
   def decipher(data, s) do
     {data, s}
-    # PRE
-    #  decode dictionary code
-    #
-    #  * checker si c'est une fonctionne systeme split, join
-    #    -> effectuer ou je ne sais pas quoi
-    #  * Sinon prendre l'objet dans le dico, regarder fonction
-    #    ->  executer la fonction
   end
 
 end

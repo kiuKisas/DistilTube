@@ -1,7 +1,10 @@
 defmodule DistilTube.Info do
   @moduledoc """
-  Documentation for DistilTube.Data
+  Get basic informations about the youtube link from the link body and others sources.
+  Need inspection and refacto
   """
+
+  # TODO: /!\ To refacto
   alias DistilTube.Youtube
 
   defp embed_sts({:ok, %Tesla.Env{body: embed_body}}),
@@ -29,6 +32,7 @@ defmodule DistilTube.Info do
          js_player_url = config_player_url(body, video_id)
                        |> List.last
                        |> Jason.decode!
+          # TODO: Is it relevent ?
           # need more inspection when to use it, token ?
           # video_id
           #|> rec_get_video_info(info[:sts], ["info", "embedded", "detailpage", "vevo", ""])
@@ -46,6 +50,37 @@ defmodule DistilTube.Info do
     end
   end
 
+  def ytplayer_config(body) do
+    if data = Regex.run(~r/;ytplayer\.config\s*=\s*({.+?});/, body) do
+      data
+      |> List.last
+      |> Jason.decode!
+    else
+      nil
+    end
+  end
+
+
+
+  def extend_info({:ok, info}) do
+    # nested update mf
+    {video_details, player_response} = info[:video_info]["player_response"]
+                      |> Jason.decode!
+                      |> Map.pop("videoDetails")
+    info
+    |> Map.update!(:video_info, &(Map.delete(&1, "player_response")))
+    |> Map.merge(%{
+      player_response: player_response,
+      video_details: video_details
+    })
+      #%{
+      #%{info: info,
+      #%{player_response: player_response_clean,
+      #%{details: Jason.decode!(video_details)
+      #}
+  end
+
+  def extend_info(err), do: err
   defp config_player_url(body, video_id) do
     player_url_assets_regex(body)
     || get_embed_player_url(video_id)
@@ -111,15 +146,6 @@ defmodule DistilTube.Info do
     )
   end
 
-  def ytplayer_config(body) do
-    if data = Regex.run(~r/;ytplayer\.config\s*=\s*({.+?});/, body) do
-      data
-      |> List.last
-      |> Jason.decode!
-    else
-      nil
-    end
-  end
 
   defp rec_get_video_info(video_id, sts, [el | acc]) do
     {:ok, %Tesla.Env{body: el_body}} = Youtube.video_info(video_id, sts, el)
@@ -139,26 +165,4 @@ defmodule DistilTube.Info do
   end
 
   defp rec_get_video_info(_, _, []), do: %{video_info: '', dashmpds: [], token: false}
-
-
-  def extend_info({:ok, info}) do
-    # nested update mf
-    {video_details, player_response} = info[:video_info]["player_response"]
-                      |> Jason.decode!
-                      |> Map.pop("videoDetails")
-    info
-    |> Map.update!(:video_info, &(Map.delete(&1, "player_response")))
-    |> Map.merge(%{
-      player_response: player_response,
-      video_details: video_details
-    })
-      #%{
-      #%{info: info,
-      #%{player_response: player_response_clean,
-      #%{details: Jason.decode!(video_details)
-      #}
-  end
-
-  def extend_info(err), do: err
-
 end

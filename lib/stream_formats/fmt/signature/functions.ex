@@ -1,4 +1,7 @@
 defmodule DistilTube.StreamFormats.Fmt.Signature.Functions do
+  @moduledoc """
+  Map of functions used to decipher the video signature.
+  """
 
   def functions, do: %{
     "split" => &split/1,

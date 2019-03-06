@@ -1,16 +1,10 @@
 defmodule DistilTube.StreamFormats.Fmt do
   @moduledoc """
-  Documentation
+
   """
 
   alias DistilTube.StreamFormats.Fmt.EncodedUrlMap
   alias DistilTube.StreamFormats.Fmt.Signature
-
-  # def is_fmt?(encoded_url_map) do
-  #   encoded_url_map
-  #   |> Enum.each(fn _k, v -> length(Map.keys(v)) >= 1 end)
-  #   |> Enum.reduce(&(&1 && &2))
-  # end
 
   def is_fmt?(video_info), do: video_info["url_encoded_fmt_stream_map"] || video_info["adaptive_fmts"]
 

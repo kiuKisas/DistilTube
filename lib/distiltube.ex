@@ -3,7 +3,7 @@ defmodule DistilTube do
   Documentation for DistilTube.
   """
   alias DistilTube.Youtube
-  
+
   def body(id) do
     case Youtube.watch(id) do
       {:ok, response} -> response.body
@@ -25,16 +25,6 @@ defmodule DistilTube do
     |> DistilTube.Info.extend_info
     |> DistilTube.StreamFormats.formats_list(id)
   end
-  #def swf_player_url(body) do
-  #   case Regex.run(~r/swfConfig.*?"(https?:\/\/.*?watch.*?-.*?\.swf)"/, body) do
-  #    # re.sub(r'\\(.)', r'\1', mobj.group(1))
-  #     [_ ,[ url ,_ ]] ->
-  #         url
-  #        |> String.replace(~r/(.)/, '')
-  #        |> String.replace(~r/1/, '')
-  #     nil -> nil
-  #  end
-  #end
 
   #def player_url(body) do
   #  cond do
@@ -43,7 +33,7 @@ defmodule DistilTube do
   #    true -> {:error, :media_not_extracted}
   #  end
   #end
-  
+
 
   # def get_info(data) do
   #   title = cond do
@@ -60,7 +50,7 @@ defmodule DistilTube do
   #   end
   # end
 
-  # refacto 
+  # refacto
   def no_token_reason(video_info) do
     video_info
   end
@@ -77,7 +67,7 @@ defmodule DistilTube do
 
   def extract_description(body) do
     cond do
-      desc = List.first(Floki.find(body, "eow-description")) -> desc 
+      desc = List.first(Floki.find(body, "eow-description")) -> desc
       true -> ""
     end
   end
